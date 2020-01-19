@@ -6,12 +6,14 @@ enum RouteComponent {
 }
 
 pub struct Route {
-    components: Vec<RouteComponent>
+    components: Vec<RouteComponent>,
+    variable_map: HashMap<String, usize>
 }
 
 impl Route {
     pub fn new(mut route: &str) -> Self {
         route = route.trim_start_matches('/');
+        let mut current_variable_index = 0;
 
         for c in route.chars() {
             if !c.is_ascii() {
@@ -23,14 +25,30 @@ impl Route {
         }
 
         let mut components: Vec<RouteComponent> = Vec::new();
+        let mut variable_map = HashMap::new();
         for component in route.split('/') {
             if component.starts_with("{") && component.ends_with("}") {
-                components.push(RouteComponent::Variable(component[1 .. component.len() - 1].to_string()))
+                let var_name: String = component[1 .. component.len() - 1].to_string();
+                if !var_name.is_empty() {
+                    if let Some(_) = variable_map.insert(var_name.clone(), current_variable_index) {
+                        panic!("Repeated name of path variable {}", var_name);
+                    }
+                }
+                current_variable_index += 1;
+                components.push(RouteComponent::Variable(var_name))
             } else {
                 components.push(RouteComponent::Literal(component.to_string()))
             }
         }
-        Route { components }
+
+        Route {
+            components,
+            variable_map,
+        }
+    }
+
+    pub fn index_of_name(&self, name: &str) -> Option<usize> {
+        self.variable_map.get(name).copied()
     }
 }
 

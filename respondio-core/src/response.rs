@@ -1,5 +1,5 @@
 use std::future::Future;
-use hyper::Body;
+use hyper::{Body, StatusCode};
 use futures::future::{ready, Ready};
 
 pub type Response = hyper::Response<hyper::Body>;
@@ -24,4 +24,18 @@ impl IntoResponse for &'static str {
     fn into_response(self) -> Self::ResultFuture {
         ready(Response::new(Body::from(self)))
     }
+}
+
+impl IntoResponse for String {
+    type ResultFuture = Ready<Response>;
+
+    fn into_response(self) -> Self::ResultFuture {
+        ready(Response::new(Body::from(self)))
+    }
+}
+
+pub fn parse_failure(arg_name: &str) -> Response {
+    let mut response = Response::new(Body::from(format!("Could not parse variable {}", arg_name)));
+    *response.status_mut() = StatusCode::BAD_REQUEST;
+    response
 }

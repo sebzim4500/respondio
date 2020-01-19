@@ -14,7 +14,8 @@ use std::pin::Pin;
 use std::convert::Infallible;
 use std::sync::Arc;
 use futures::future::{Either, ready};
-use crate::routing::{RouteTree, Route};
+pub use routing::Route;
+use routing::{RouteTree};
 
 #[derive(Clone)]
 pub struct RouteHandler {
