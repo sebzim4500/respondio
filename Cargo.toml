@@ -14,3 +14,7 @@ respondio-macros = { path = "./respondio-macros" }
 
 [dev-dependencies]
 tokio = { version = "0.2", features = ["full"] }
+reqwest = "0.10.1"
+
+[profile.release]
+debug = true

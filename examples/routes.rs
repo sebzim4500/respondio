@@ -3,7 +3,6 @@ use tokio;
 
 #[respondio::get("/todo")]
 async fn get_todo() -> &'static str {
-    println!("Got request");
     "Hello world"
 }
 

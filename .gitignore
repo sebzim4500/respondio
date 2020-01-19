@@ -5,3 +5,6 @@ Cargo.lock
 **.iml
 /respondio-core/target
 /respondio-macros/target
+perf.data
+perf.data.old
+flame.svg
