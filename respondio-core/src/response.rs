@@ -1,6 +1,6 @@
-use std::future::Future;
-use hyper::{Body, StatusCode};
 use futures::future::{ready, Ready};
+use hyper::{Body, StatusCode};
+use std::future::Future;
 
 pub type Response = hyper::Response<hyper::Body>;
 

@@ -2,12 +2,12 @@ use std::collections::HashMap;
 
 enum RouteComponent {
     Literal(String),
-    Variable(String)
+    Variable(String),
 }
 
 pub struct Route {
     components: Vec<RouteComponent>,
-    variable_map: HashMap<String, usize>
+    variable_map: HashMap<String, usize>,
 }
 
 impl Route {
@@ -28,7 +28,7 @@ impl Route {
         let mut variable_map = HashMap::new();
         for component in route.split('/') {
             if component.starts_with("{") && component.ends_with("}") {
-                let var_name: String = component[1 .. component.len() - 1].to_string();
+                let var_name: String = component[1..component.len() - 1].to_string();
                 if !var_name.is_empty() {
                     if let Some(_) = variable_map.insert(var_name.clone(), current_variable_index) {
                         panic!("Repeated name of path variable {}", var_name);
@@ -58,7 +58,9 @@ pub struct RouteTree<T> {
 
 impl<T> Default for RouteTree<T> {
     fn default() -> Self {
-        RouteTree { root: Default::default() }
+        RouteTree {
+            root: Default::default(),
+        }
     }
 }
 
@@ -85,10 +87,10 @@ impl<T> RouteTree<T> {
             match component {
                 RouteComponent::Literal(literal) => {
                     node = node.literals.entry(literal).or_default();
-                },
+                }
                 RouteComponent::Variable(_) => {
                     node = node.variable.get_or_insert_with(|| Default::default());
-                },
+                }
             }
         }
         if node.handler.is_some() {
@@ -116,7 +118,7 @@ impl<T> RouteTree<T> {
 
 #[cfg(test)]
 mod tests {
-    use crate::routing::{RouteTree, Route};
+    use crate::routing::{Route, RouteTree};
 
     #[test]
     fn test_root_path() {
@@ -132,7 +134,10 @@ mod tests {
         routes.add_route(Route::new("{}"), "variable");
         routes.add_route(Route::new("hello"), "literal");
         assert_eq!(routes.match_path("hello"), Some((&"literal", vec!())));
-        assert_eq!(routes.match_path("world"), Some((&"variable", vec!("world".to_string()))));
+        assert_eq!(
+            routes.match_path("world"),
+            Some((&"variable", vec!("world".to_string())))
+        );
     }
 
     #[test]
@@ -141,7 +146,10 @@ mod tests {
         routes.add_route(Route::new("{}/asdf"), "variable");
         routes.add_route(Route::new("hello/asdf"), "literal");
         assert_eq!(routes.match_path("hello/asdf"), Some((&"literal", vec!())));
-        assert_eq!(routes.match_path("world/asdf"), Some((&"variable", vec!("world".to_string()))));
+        assert_eq!(
+            routes.match_path("world/asdf"),
+            Some((&"variable", vec!("world".to_string())))
+        );
         assert_eq!(routes.match_path("world"), None);
     }
 }

@@ -1,9 +1,9 @@
 extern crate proc_macro;
 use proc_macro2::{Ident, Span};
 
-use proc_macro::{TokenStream};
-use syn::{parse, parse_macro_input, NestedMeta, FnArg, Pat};
-use quote::{quote};
+use proc_macro::TokenStream;
+use quote::quote;
+use syn::{parse, parse_macro_input, FnArg, NestedMeta, Pat};
 
 use respondio_core::Route;
 
@@ -24,7 +24,7 @@ fn generate_route(attr: TokenStream, item: TokenStream, method: &str) -> TokenSt
     let method_name = parsed.sig.ident.clone();
     let route = Route::new(&path);
 
-    let arg_names: Vec<Ident> = (0 .. parsed.sig.inputs.len())
+    let arg_names: Vec<Ident> = (0..parsed.sig.inputs.len())
         .map(|index| Ident::new(&format!("__arg{}", index), Span::call_site()))
         .collect();
 
@@ -78,4 +78,3 @@ fn generate_route(attr: TokenStream, item: TokenStream, method: &str) -> TokenSt
     };
     stream.into()
 }
-

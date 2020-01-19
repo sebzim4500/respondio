@@ -1,5 +1,5 @@
-use tokio;
 use respondio;
+use tokio;
 
 #[respondio::get("/todo")]
 async fn get_todo() -> &'static str {
@@ -9,9 +9,7 @@ async fn get_todo() -> &'static str {
 
 #[respondio::get("/reverse/{input}")]
 async fn reverse(input: String) -> String {
-    println!("Reversing");
     input.chars().rev().collect()
-//    "hello".to_string()
 }
 
 #[respondio::get("/square/{number}")]
